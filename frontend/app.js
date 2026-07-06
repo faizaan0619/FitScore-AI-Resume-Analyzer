@@ -103,7 +103,8 @@ async function runAnalysis() {
 
     renderResults(data);
   } catch (err) {
-    showError("Could not reach the analysis server. Is the Flask backend running on localhost:5000?");
+    console.error("Analysis error:", err);
+    showError(`Could not reach the analysis server (${API_BASE}). If this is a deployed app, make sure you are accessing it via its public URL.`);
   } finally {
     setLoading(false);
   }
