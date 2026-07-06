@@ -104,7 +104,7 @@ async function runAnalysis() {
     renderResults(data);
   } catch (err) {
     console.error("Analysis error:", err);
-    showError(`Could not reach the analysis server (${API_BASE}). If this is a deployed app, make sure you are accessing it via its public URL.`);
+    showError(`Could not reach the analysis server (${API_BASE}). Details: ${err.message || err}. If this is a deployed app, make sure you are accessing it via its public URL.`);
   } finally {
     setLoading(false);
   }
