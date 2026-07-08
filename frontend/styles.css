@@ -416,7 +416,7 @@ html, body {
 }
 
 .jd-panel { display: flex; flex-direction: column; }
-#jd-input {
+#jd-input, #batch-jd-input {
   flex: 1;
   min-height: 240px;
   resize: none;
@@ -431,7 +431,7 @@ html, body {
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-#jd-input:focus { 
+#jd-input:focus, #batch-jd-input:focus { 
   border-color: var(--signal); 
   box-shadow: 0 0 0 2px var(--signal-glow);
 }
