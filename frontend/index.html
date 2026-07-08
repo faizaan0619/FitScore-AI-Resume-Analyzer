@@ -26,7 +26,7 @@
         <span class="brand-sub">/ AI ATS Engine</span>
       </div>
     </div>
-    
+
     <nav class="nav-tabs">
       <button class="tab-btn active" data-tab="single-scan">Single Scan</button>
       <button class="tab-btn" data-tab="recruiter-sandbox">Recruiter Board</button>
@@ -35,14 +35,14 @@
         History <span class="badge" id="history-badge" hidden>0</span>
       </button>
     </nav>
-    
+
     <div class="topbar-controls">
       <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle light/dark theme">
         <span id="theme-icon">☼</span>
       </button>
       <div class="user-mockup">
         <span class="user-dot"></span>
-        <span>SaaS Portal</span>
+        <span>Powered By AI</span>
       </div>
     </div>
   </header>
@@ -55,7 +55,8 @@
     <section class="tab-content" id="view-single-scan">
       <div class="hero">
         <h1>Does your resume read like a match — <span class="hero-accent">or like noise?</span></h1>
-        <p class="hero-copy">Upload a single resume and paste the job description to run a TF-IDF semantic scan, an explicit skills extraction pass, and an 11-point ATS compatibility parse check.</p>
+        <p class="hero-copy">Upload a single resume and paste the job description to run a TF-IDF semantic scan, an
+          explicit skills extraction pass, and an 11-point ATS compatibility parse check.</p>
       </div>
 
       <section class="input-deck">
@@ -104,7 +105,8 @@
             <div class="dial-wrap">
               <svg viewBox="0 0 200 120" class="dial-svg">
                 <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-track" />
-                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill" id="dial-fill-match" pathLength="100" stroke-dasharray="0 100" />
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill" id="dial-fill-match" pathLength="100"
+                  stroke-dasharray="0 100" />
                 <g id="dial-ticks-match"></g>
               </svg>
               <div class="dial-readout">
@@ -119,7 +121,8 @@
             <div class="dial-wrap">
               <svg viewBox="0 0 200 120" class="dial-svg">
                 <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-track" />
-                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill dial-fill-amber" id="dial-fill-ats" pathLength="100" stroke-dasharray="0 100" />
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill dial-fill-amber" id="dial-fill-ats"
+                  pathLength="100" stroke-dasharray="0 100" />
                 <g id="dial-ticks-ats"></g>
               </svg>
               <div class="dial-readout">
@@ -174,7 +177,8 @@
     <section class="tab-content" id="view-recruiter-sandbox" hidden>
       <div class="hero">
         <h1>Recruiter Sandbox: <span class="hero-accent">Batch Ranking</span></h1>
-        <p class="hero-copy">Upload multiple candidate resumes at once and rank them instantly against your target job description. Sort and filter candidates based on match suitability.</p>
+        <p class="hero-copy">Upload multiple candidate resumes at once and rank them instantly against your target job
+          description. Sort and filter candidates based on match suitability.</p>
       </div>
 
       <section class="input-deck">
@@ -244,7 +248,8 @@
     <section class="tab-content" id="view-how-it-works" hidden>
       <div class="hero">
         <h1>Under the hood: <span class="hero-accent">How FitScore Evaluates</span></h1>
-        <p class="hero-copy">Learn how our rule-based ATS parser and TF-IDF matcher rank resumes. See the processing pipeline from raw file text extraction to the weighted output score.</p>
+        <p class="hero-copy">Learn how our rule-based ATS parser and TF-IDF matcher rank resumes. See the processing
+          pipeline from raw file text extraction to the weighted output score.</p>
       </div>
 
       <div class="pipeline-container">
@@ -252,7 +257,9 @@
           <div class="step-number">1</div>
           <div class="step-content">
             <div class="step-title">Text Extraction <span class="step-tech">pdfplumber & python-docx</span></div>
-            <p class="step-desc">Extracts raw text data from PDF, Word (DOCX), or plain text (TXT). The parser handles hidden table columns, header structures, and strips out raw binary characters to parse formatting-clean strings.</p>
+            <p class="step-desc">Extracts raw text data from PDF, Word (DOCX), or plain text (TXT). The parser handles
+              hidden table columns, header structures, and strips out raw binary characters to parse formatting-clean
+              strings.</p>
           </div>
         </div>
 
@@ -260,7 +267,9 @@
           <div class="step-number">2</div>
           <div class="step-content">
             <div class="step-title">ATS Pattern Parsing <span class="step-tech">Regular Expressions</span></div>
-            <p class="step-desc">Checks structural components such as presence of contact details (email, phone, LinkedIn/GitHub profiles), main sections (Experience, Education, Skills, Projects), date patterns, and document length checks. Highlights passive vs. action verb usage (quantifiable indicators).</p>
+            <p class="step-desc">Checks structural components such as presence of contact details (email, phone,
+              LinkedIn/GitHub profiles), main sections (Experience, Education, Skills, Projects), date patterns, and
+              document length checks. Highlights passive vs. action verb usage (quantifiable indicators).</p>
           </div>
         </div>
 
@@ -268,15 +277,20 @@
           <div class="step-number">3</div>
           <div class="step-content">
             <div class="step-title">Explicit Skill Cross-Matching <span class="step-tech">Taxonomy Lookup</span></div>
-            <p class="step-desc">Matches your resume against an extensive dictionary of 100+ standard engineering, database, design, and administrative skill tags. Isolates required skills from the job description and marks which tags are absent.</p>
+            <p class="step-desc">Matches your resume against an extensive dictionary of 100+ standard engineering,
+              database, design, and administrative skill tags. Isolates required skills from the job description and
+              marks which tags are absent.</p>
           </div>
         </div>
 
         <div class="pipeline-step">
           <div class="step-number">4</div>
           <div class="step-content">
-            <div class="step-title">TF-IDF Vector Space Alignment <span class="step-tech">scikit-learn Cosine Similarity</span></div>
-            <p class="step-desc">Constructs TF-IDF matrices (term frequency-inverse document frequency) for both texts. Using cosine vector angles, evaluates semantic/lexical similarity to assess contextual compatibility beyond exact keywords.</p>
+            <div class="step-title">TF-IDF Vector Space Alignment <span class="step-tech">scikit-learn Cosine
+                Similarity</span></div>
+            <p class="step-desc">Constructs TF-IDF matrices (term frequency-inverse document frequency) for both texts.
+              Using cosine vector angles, evaluates semantic/lexical similarity to assess contextual compatibility
+              beyond exact keywords.</p>
           </div>
         </div>
 
@@ -284,7 +298,9 @@
           <div class="step-number">5</div>
           <div class="step-content">
             <div class="step-title">Weighted Score Blending <span class="step-tech">Scoring Algorithm</span></div>
-            <p class="step-desc">Fuses semantic alignment (50%) and explicit skill dictionary overlap (50%) to yield the final match index. Fails or partial flags reduce the ATS score, providing clear guidelines on missing details.</p>
+            <p class="step-desc">Fuses semantic alignment (50%) and explicit skill dictionary overlap (50%) to yield the
+              final match index. Fails or partial flags reduce the ATS score, providing clear guidelines on missing
+              details.</p>
           </div>
         </div>
       </div>
@@ -320,7 +336,7 @@
         <button class="btn-close" id="modal-close-btn">&times;</button>
       </header>
       <div class="modal-body">
-        
+
         <!-- Dials inside modal -->
         <div class="dial-row">
           <div class="dial-card">
@@ -328,7 +344,8 @@
             <div class="dial-wrap">
               <svg viewBox="0 0 200 120" class="dial-svg">
                 <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-track" />
-                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill" id="modal-dial-fill-match" pathLength="100" stroke-dasharray="0 100" />
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill" id="modal-dial-fill-match" pathLength="100"
+                  stroke-dasharray="0 100" />
                 <g id="modal-dial-ticks-match"></g>
               </svg>
               <div class="dial-readout">
@@ -343,7 +360,8 @@
             <div class="dial-wrap">
               <svg viewBox="0 0 200 120" class="dial-svg">
                 <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-track" />
-                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill dial-fill-amber" id="modal-dial-fill-ats" pathLength="100" stroke-dasharray="0 100" />
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill dial-fill-amber" id="modal-dial-fill-ats"
+                  pathLength="100" stroke-dasharray="0 100" />
                 <g id="modal-dial-ticks-ats"></g>
               </svg>
               <div class="dial-readout">
