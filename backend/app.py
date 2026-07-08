@@ -98,6 +98,98 @@ def analyze():
     })
 
 
+@app.route("/api/analyze-batch", methods=["POST"])
+def analyze_batch():
+    if "resumes" not in request.files:
+        return jsonify({"error": "No resume files uploaded."}), 400
+
+    resume_files = request.files.getlist("resumes")
+    job_description = request.form.get("job_description", "").strip()
+
+    if not resume_files or len(resume_files) == 0 or (len(resume_files) == 1 and resume_files[0].filename == ""):
+        return jsonify({"error": "No resume files selected."}), 400
+
+    if not job_description or len(job_description) < 30:
+        return jsonify({"error": "Please paste a job description (at least a few sentences)."}), 400
+
+    results = []
+    for resume_file in resume_files:
+        if resume_file.filename == "":
+            continue
+
+        filename = resume_file.filename
+        try:
+            file_bytes = resume_file.read()
+            if len(file_bytes) > MAX_FILE_SIZE_MB * 1024 * 1024:
+                results.append({
+                    "filename": filename,
+                    "error": f"File too large. Max size is {MAX_FILE_SIZE_MB}MB.",
+                    "success": False
+                })
+                continue
+
+            try:
+                resume_text = extract_text(file_bytes, filename)
+            except ValueError as e:
+                results.append({
+                    "filename": filename,
+                    "error": str(e),
+                    "success": False
+                })
+                continue
+            except Exception:
+                results.append({
+                    "filename": filename,
+                    "error": "Could not read this file. It may be corrupted or password-protected.",
+                    "success": False
+                })
+                continue
+
+            if len(resume_text.strip()) < 50:
+                results.append({
+                    "filename": filename,
+                    "error": "Very little text could be extracted from this resume.",
+                    "success": False
+                })
+                continue
+
+            signals = structural_signals(resume_text)
+            match_result = compute_match(resume_text, job_description)
+            ats_result = check_ats(resume_text, signals)
+
+            # Merge missing skills/keywords into ATS suggestions for a unified action list
+            combined_suggestions = list(ats_result["suggestions"])
+            if match_result["missing_skills"]:
+                top_missing = ", ".join(match_result["missing_skills"][:6])
+                combined_suggestions.insert(
+                    0,
+                    f"This job description emphasizes: {top_missing}. Add these to your Skills or Projects section if you have genuine experience with them.",
+                )
+
+            results.append({
+                "filename": filename,
+                "success": True,
+                "match_score": match_result["match_score"],
+                "skill_coverage": match_result["skill_coverage"],
+                "matched_skills": match_result["matched_skills"],
+                "missing_skills": match_result["missing_skills"],
+                "matched_keywords": match_result["matched_keywords"],
+                "missing_keywords": match_result["missing_keywords"],
+                "ats_score": ats_result["ats_score"],
+                "checklist": ats_result["checklist"],
+                "suggestions": combined_suggestions,
+                "word_count": signals["word_count"],
+            })
+        except Exception as e:
+            results.append({
+                "filename": filename,
+                "error": f"Internal error: {str(e)}",
+                "success": False
+            })
+
+    return jsonify({"results": results})
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host="0.0.0.0", port=port)

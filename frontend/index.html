@@ -4,11 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FitScore — AI Resume Analyzer</title>
+  <title>FitScore — AI Resume Matching & Ranking SaaS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -17,146 +17,386 @@
 
   <div class="grain"></div>
 
+  <!-- Header top bar with navigation tabs and theme toggle -->
   <header class="topbar">
-    <div class="brand">
+    <div class="brand" id="brand-logo">
       <span class="brand-mark">◎</span>
-      <span class="brand-name">FitScore</span>
-      <span class="brand-sub">/ resume signal analysis</span>
+      <div>
+        <span class="brand-name">FitScore</span>
+        <span class="brand-sub">/ AI ATS Engine</span>
+      </div>
     </div>
-    <div class="topbar-meta">
-      <span class="meta-dot"></span> ML matching engine online
+    
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="single-scan">Single Scan</button>
+      <button class="tab-btn" data-tab="recruiter-sandbox">Recruiter Board</button>
+      <button class="tab-btn" data-tab="how-it-works">How It Works</button>
+      <button class="tab-btn" data-tab="history">
+        History <span class="badge" id="history-badge" hidden>0</span>
+      </button>
+    </nav>
+    
+    <div class="topbar-controls">
+      <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle light/dark theme">
+        <span id="theme-icon">☼</span>
+      </button>
+      <div class="user-mockup">
+        <span class="user-dot"></span>
+        <span>SaaS Portal</span>
+      </div>
     </div>
   </header>
 
   <main class="stage">
 
-    <section class="hero">
-      <h1>Does your resume<br>read like a match —<br><span class="hero-accent">or like noise?</span></h1>
-      <p class="hero-copy">Drop in a resume and a job description. Scanline runs a TF-IDF similarity pass, a
-        skill-overlap check, and an 11-point ATS parse test — the same kind of scan an applicant tracking system runs
-        before a human ever sees the file.</p>
-    </section>
-
-    <section class="input-deck" id="input-deck">
-
-      <div class="panel upload-panel" id="upload-panel">
-        <div class="panel-label"><span>01</span> Resume</div>
-        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload resume">
-          <div class="scanline-beam" id="scan-beam"></div>
-          <input type="file" id="file-input" accept=".pdf,.docx,.txt" hidden>
-          <div class="dropzone-idle" id="dropzone-idle">
-            <div class="dz-icon">⬒</div>
-            <p class="dz-title">Drop resume here</p>
-            <p class="dz-sub">PDF, DOCX, or TXT — max 5MB</p>
-            <button class="btn-ghost" type="button" id="browse-btn">Browse file</button>
-          </div>
-          <div class="dropzone-filled" id="dropzone-filled" hidden>
-            <div class="dz-icon">▤</div>
-            <p class="dz-filename" id="dz-filename">resume.pdf</p>
-            <button class="btn-text" type="button" id="clear-btn">Remove</button>
-          </div>
-        </div>
+    <!-- ============================================================
+         1. SINGLE SCAN VIEW
+         ============================================================ -->
+    <section class="tab-content" id="view-single-scan">
+      <div class="hero">
+        <h1>Does your resume read like a match — <span class="hero-accent">or like noise?</span></h1>
+        <p class="hero-copy">Upload a single resume and paste the job description to run a TF-IDF semantic scan, an explicit skills extraction pass, and an 11-point ATS compatibility parse check.</p>
       </div>
 
-      <div class="panel jd-panel">
-        <div class="panel-label"><span>02</span> Job description</div>
-        <textarea id="jd-input"
-          placeholder="Paste the full job description here — including the requirements and skills sections. The more complete it is, the sharper the match reading."></textarea>
-        <div class="jd-footer">
-          <span id="jd-count">0 characters</span>
-        </div>
-      </div>
-
-    </section>
-
-    <div class="run-row">
-      <button class="btn-run" id="run-btn">
-        <span id="run-label">Run analysis</span>
-        <span class="run-arrow">→</span>
-      </button>
-      <div class="error-msg" id="error-msg" hidden></div>
-    </div>
-
-    <section class="results" id="results" hidden>
-
-      <div class="dial-row">
-        <div class="dial-card">
-          <div class="panel-label"><span>Reading</span> JD match score</div>
-          <div class="dial-wrap">
-            <svg viewBox="0 0 200 120" class="dial-svg">
-              <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-track" />
-              <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill" id="dial-fill-match" pathLength="100"
-                stroke-dasharray="0 100" />
-              <g id="dial-ticks-match"></g>
-            </svg>
-            <div class="dial-readout">
-              <span class="dial-number" id="match-number">0</span><span class="dial-percent">%</span>
+      <section class="input-deck">
+        <div class="panel upload-panel">
+          <div class="panel-label"><span>01</span> Resume</div>
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload resume">
+            <div class="scanline-beam" id="scan-beam"></div>
+            <input type="file" id="file-input" accept=".pdf,.docx,.txt" hidden>
+            <div class="dropzone-idle" id="dropzone-idle">
+              <div class="dz-icon">⬒</div>
+              <p class="dz-title">Drop resume here</p>
+              <p class="dz-sub">PDF, DOCX, or TXT — max 5MB</p>
+              <button class="btn-ghost" type="button" id="browse-btn">Browse file</button>
+            </div>
+            <div class="dropzone-filled" id="dropzone-filled" hidden>
+              <div class="dz-icon">▤</div>
+              <p class="dz-filename" id="dz-filename">resume.pdf</p>
+              <button class="btn-text" type="button" id="clear-btn">Remove</button>
             </div>
           </div>
-          <p class="dial-caption" id="match-caption">—</p>
         </div>
 
-        <div class="dial-card">
-          <div class="panel-label"><span>Reading</span> ATS parse score</div>
-          <div class="dial-wrap">
-            <svg viewBox="0 0 200 120" class="dial-svg">
-              <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-track" />
-              <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill dial-fill-amber" id="dial-fill-ats"
-                pathLength="100" stroke-dasharray="0 100" />
-              <g id="dial-ticks-ats"></g>
-            </svg>
-            <div class="dial-readout">
-              <span class="dial-number" id="ats-number">0</span><span class="dial-percent">%</span>
+        <div class="panel jd-panel">
+          <div class="panel-label"><span>02</span> Job description</div>
+          <textarea id="jd-input"
+            placeholder="Paste the full job description here — including the requirements and skills sections. The more complete it is, the sharper the match reading."></textarea>
+          <div class="jd-footer">
+            <span id="jd-count">0 characters</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="run-row">
+        <button class="btn-run" id="run-btn">
+          <span id="run-label">Run analysis</span>
+          <span class="run-arrow">→</span>
+        </button>
+        <div class="error-msg" id="error-msg" hidden></div>
+      </div>
+
+      <!-- Single scan results container -->
+      <section class="results" id="results" hidden>
+        <div class="dial-row">
+          <div class="dial-card">
+            <div class="panel-label"><span>Reading</span> JD match score</div>
+            <div class="dial-wrap">
+              <svg viewBox="0 0 200 120" class="dial-svg">
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-track" />
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill" id="dial-fill-match" pathLength="100" stroke-dasharray="0 100" />
+                <g id="dial-ticks-match"></g>
+              </svg>
+              <div class="dial-readout">
+                <span class="dial-number" id="match-number">0</span><span class="dial-percent">%</span>
+              </div>
+            </div>
+            <p class="dial-caption" id="match-caption">—</p>
+          </div>
+
+          <div class="dial-card">
+            <div class="panel-label"><span>Reading</span> ATS parse score</div>
+            <div class="dial-wrap">
+              <svg viewBox="0 0 200 120" class="dial-svg">
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-track" />
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill dial-fill-amber" id="dial-fill-ats" pathLength="100" stroke-dasharray="0 100" />
+                <g id="dial-ticks-ats"></g>
+              </svg>
+              <div class="dial-readout">
+                <span class="dial-number" id="ats-number">0</span><span class="dial-percent">%</span>
+              </div>
+            </div>
+            <p class="dial-caption" id="ats-caption">—</p>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+          <div class="panel skills-panel">
+            <div class="panel-label"><span>03</span> Skill overlap</div>
+            <div class="skill-block">
+              <p class="skill-block-label matched">Matched — present in both</p>
+              <div class="chip-row" id="matched-skills"></div>
+            </div>
+            <div class="skill-block">
+              <p class="skill-block-label missing">Missing — in JD, not in resume</p>
+              <div class="chip-row" id="missing-skills"></div>
             </div>
           </div>
-          <p class="dial-caption" id="ats-caption">—</p>
+
+          <div class="panel keyword-panel">
+            <div class="panel-label"><span>04</span> Keyword overlap</div>
+            <div class="skill-block">
+              <p class="skill-block-label matched">Matched — phrases in your resume</p>
+              <div class="chip-row" id="matched-keywords"></div>
+            </div>
+            <div class="skill-block">
+              <p class="skill-block-label missing">Missing — keywords the JD emphasizes</p>
+              <div class="chip-row" id="missing-keywords"></div>
+            </div>
+          </div>
+
+          <div class="panel checklist-panel">
+            <div class="panel-label"><span>04</span> ATS parse checklist</div>
+            <ul class="checklist" id="checklist"></ul>
+          </div>
         </div>
+
+        <div class="panel suggestions-panel">
+          <div class="panel-label"><span>05</span> Suggested fixes</div>
+          <ol class="suggestions" id="suggestions"></ol>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============================================================
+         2. RECRUITER BATCH RANKER
+         ============================================================ -->
+    <section class="tab-content" id="view-recruiter-sandbox" hidden>
+      <div class="hero">
+        <h1>Recruiter Sandbox: <span class="hero-accent">Batch Ranking</span></h1>
+        <p class="hero-copy">Upload multiple candidate resumes at once and rank them instantly against your target job description. Sort and filter candidates based on match suitability.</p>
       </div>
 
-      <div class="detail-grid">
-
-        <div class="panel skills-panel">
-          <div class="panel-label"><span>03</span> Skill overlap</div>
-          <div class="skill-block">
-            <p class="skill-block-label matched">Matched — present in both</p>
-            <div class="chip-row" id="matched-skills"></div>
-          </div>
-          <div class="skill-block">
-            <p class="skill-block-label missing">Missing — in JD, not in resume</p>
-            <div class="chip-row" id="missing-skills"></div>
-          </div>
-        </div>
-
-        <div class="panel keyword-panel">
-          <div class="panel-label"><span>04</span> Keyword overlap</div>
-          <div class="skill-block">
-            <p class="skill-block-label matched">Matched — phrases in your resume</p>
-            <div class="chip-row" id="matched-keywords"></div>
-          </div>
-          <div class="skill-block">
-            <p class="skill-block-label missing">Missing — keywords the JD emphasizes</p>
-            <div class="chip-row" id="missing-keywords"></div>
+      <section class="input-deck">
+        <div class="panel upload-panel">
+          <div class="panel-label"><span>01</span> Candidate Resumes</div>
+          <div class="multi-drag-container">
+            <div class="dropzone" id="batch-dropzone" tabindex="0" role="button" aria-label="Upload multiple resumes">
+              <div class="scanline-beam" id="batch-scan-beam"></div>
+              <input type="file" id="batch-file-input" accept=".pdf,.docx,.txt" multiple hidden>
+              <div class="dropzone-idle" id="batch-dropzone-idle">
+                <div class="dz-icon">⬎</div>
+                <p class="dz-title">Select multiple resumes</p>
+                <p class="dz-sub">PDF, DOCX, or TXT — multi-select files</p>
+                <button class="btn-ghost" type="button" id="batch-browse-btn">Browse files</button>
+              </div>
+            </div>
+            <div class="resumes-list-box" id="batch-files-list">
+              <div class="empty-txt">No resumes selected yet.</div>
+            </div>
           </div>
         </div>
 
-        <div class="panel checklist-panel">
-          <div class="panel-label"><span>04</span> ATS parse checklist</div>
-          <ul class="checklist" id="checklist"></ul>
+        <div class="panel jd-panel">
+          <div class="panel-label"><span>02</span> Target Job description</div>
+          <textarea id="batch-jd-input"
+            placeholder="Paste your target job description details here. All selected resumes will be parsed and evaluated against this description."></textarea>
+          <div class="jd-footer">
+            <span id="batch-jd-count">0 characters</span>
+          </div>
         </div>
+      </section>
 
+      <div class="run-row">
+        <button class="btn-run" id="batch-run-btn">
+          <span id="batch-run-label">Rank candidates</span>
+          <span class="run-arrow">→</span>
+        </button>
+        <div class="error-msg" id="batch-error-msg" hidden></div>
       </div>
 
-      <div class="panel suggestions-panel">
-        <div class="panel-label"><span>05</span> Suggested fixes</div>
-        <ol class="suggestions" id="suggestions"></ol>
+      <!-- Batch leaderboard layout -->
+      <section class="panel leaderboard-panel" id="batch-results-panel" hidden>
+        <div class="panel-label"><span>Leaderboard</span> Candidate Matches ranked by score</div>
+        <div class="table-responsive">
+          <table class="ranker-table">
+            <thead>
+              <tr>
+                <th class="table-rank">Rank</th>
+                <th>Candidate / File</th>
+                <th>JD Match Score</th>
+                <th>ATS Compatibility</th>
+                <th>Suitability</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============================================================
+         3. HOW IT WORKS SECTION
+         ============================================================ -->
+    <section class="tab-content" id="view-how-it-works" hidden>
+      <div class="hero">
+        <h1>Under the hood: <span class="hero-accent">How FitScore Evaluates</span></h1>
+        <p class="hero-copy">Learn how our rule-based ATS parser and TF-IDF matcher rank resumes. See the processing pipeline from raw file text extraction to the weighted output score.</p>
       </div>
 
+      <div class="pipeline-container">
+        <div class="pipeline-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <div class="step-title">Text Extraction <span class="step-tech">pdfplumber & python-docx</span></div>
+            <p class="step-desc">Extracts raw text data from PDF, Word (DOCX), or plain text (TXT). The parser handles hidden table columns, header structures, and strips out raw binary characters to parse formatting-clean strings.</p>
+          </div>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <div class="step-title">ATS Pattern Parsing <span class="step-tech">Regular Expressions</span></div>
+            <p class="step-desc">Checks structural components such as presence of contact details (email, phone, LinkedIn/GitHub profiles), main sections (Experience, Education, Skills, Projects), date patterns, and document length checks. Highlights passive vs. action verb usage (quantifiable indicators).</p>
+          </div>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <div class="step-title">Explicit Skill Cross-Matching <span class="step-tech">Taxonomy Lookup</span></div>
+            <p class="step-desc">Matches your resume against an extensive dictionary of 100+ standard engineering, database, design, and administrative skill tags. Isolates required skills from the job description and marks which tags are absent.</p>
+          </div>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <div class="step-title">TF-IDF Vector Space Alignment <span class="step-tech">scikit-learn Cosine Similarity</span></div>
+            <p class="step-desc">Constructs TF-IDF matrices (term frequency-inverse document frequency) for both texts. Using cosine vector angles, evaluates semantic/lexical similarity to assess contextual compatibility beyond exact keywords.</p>
+          </div>
+        </div>
+
+        <div class="pipeline-step">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <div class="step-title">Weighted Score Blending <span class="step-tech">Scoring Algorithm</span></div>
+            <p class="step-desc">Fuses semantic alignment (50%) and explicit skill dictionary overlap (50%) to yield the final match index. Fails or partial flags reduce the ATS score, providing clear guidelines on missing details.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. SCANNING HISTORY VIEW
+         ============================================================ -->
+    <section class="tab-content" id="view-history" hidden>
+      <div class="panel">
+        <div class="history-header">
+          <h2>Analysis History Log</h2>
+          <button class="btn-danger" id="clear-history-btn">Clear All</button>
+        </div>
+        <div class="history-list" id="history-list-container">
+          <!-- Dynamically populated list of past reports -->
+          <div class="history-empty">Your analysis history is empty. Runs you execute will appear here.</div>
+        </div>
+      </div>
     </section>
 
   </main>
 
+  <!-- Sliding Details Report Modal -->
+  <div class="modal" id="detail-modal" hidden>
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-content">
+      <header class="modal-header">
+        <div>
+          <h2 id="modal-filename">Candidate Report</h2>
+          <p class="modal-subtitle">Full FitScore matching details</p>
+        </div>
+        <button class="btn-close" id="modal-close-btn">&times;</button>
+      </header>
+      <div class="modal-body">
+        
+        <!-- Dials inside modal -->
+        <div class="dial-row">
+          <div class="dial-card">
+            <div class="panel-label"><span>Reading</span> JD match score</div>
+            <div class="dial-wrap">
+              <svg viewBox="0 0 200 120" class="dial-svg">
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-track" />
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill" id="modal-dial-fill-match" pathLength="100" stroke-dasharray="0 100" />
+                <g id="modal-dial-ticks-match"></g>
+              </svg>
+              <div class="dial-readout">
+                <span class="dial-number" id="modal-match-number">0</span><span class="dial-percent">%</span>
+              </div>
+            </div>
+            <p class="dial-caption" id="modal-match-caption">—</p>
+          </div>
+
+          <div class="dial-card">
+            <div class="panel-label"><span>Reading</span> ATS parse score</div>
+            <div class="dial-wrap">
+              <svg viewBox="0 0 200 120" class="dial-svg">
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-track" />
+                <path d="M 20 100 A 80 80 0 0 1 180 100" class="dial-fill dial-fill-amber" id="modal-dial-fill-ats" pathLength="100" stroke-dasharray="0 100" />
+                <g id="modal-dial-ticks-ats"></g>
+              </svg>
+              <div class="dial-readout">
+                <span class="dial-number" id="modal-ats-number">0</span><span class="dial-percent">%</span>
+              </div>
+            </div>
+            <p class="dial-caption" id="modal-ats-caption">—</p>
+          </div>
+        </div>
+
+        <!-- Detail grid inside modal -->
+        <div class="detail-grid">
+          <div class="panel skills-panel">
+            <div class="panel-label"><span>03</span> Skill overlap</div>
+            <div class="skill-block">
+              <p class="skill-block-label matched">Matched — present in both</p>
+              <div class="chip-row" id="modal-matched-skills"></div>
+            </div>
+            <div class="skill-block">
+              <p class="skill-block-label missing">Missing — in JD, not in resume</p>
+              <div class="chip-row" id="modal-missing-skills"></div>
+            </div>
+          </div>
+
+          <div class="panel keyword-panel">
+            <div class="panel-label"><span>04</span> Keyword overlap</div>
+            <div class="skill-block">
+              <p class="skill-block-label matched">Matched — phrases in your resume</p>
+              <div class="chip-row" id="modal-matched-keywords"></div>
+            </div>
+            <div class="skill-block">
+              <p class="skill-block-label missing">Missing — keywords the JD emphasizes</p>
+              <div class="chip-row" id="modal-missing-keywords"></div>
+            </div>
+          </div>
+
+          <div class="panel checklist-panel">
+            <div class="panel-label"><span>04</span> ATS parse checklist</div>
+            <ul class="checklist" id="modal-checklist"></ul>
+          </div>
+        </div>
+
+        <div class="panel suggestions-panel">
+          <div class="panel-label"><span>05</span> Suggested fixes</div>
+          <ol class="suggestions" id="modal-suggestions"></ol>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <footer class="foot">
-    <span>Scanline — built with Flask · scikit-learn · pdfplumber</span>
+    <span>FitScore SaaS Portal — Built with Flask · scikit-learn · pdfplumber</span>
   </footer>
 
   <script src="app.js"></script>

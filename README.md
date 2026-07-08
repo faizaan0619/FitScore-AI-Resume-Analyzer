@@ -116,3 +116,5 @@ proper named-entity/skills-extraction model instead of a static list.
 - Support for multiple resume versions scored against the same JD, ranked
 - A "before/after" diff view showing suggested edits
 - Persist analysis history (would pair well with a small SQLite layer)
+
+Created as a college project by --FAIZAN MUSHTAQ
