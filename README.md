@@ -1,4 +1,4 @@
-# Scanline — AI Resume Analyzer
+# FitScore — AI Resume Analyzer
 
 A full-stack ML web app that scores how well a resume matches a job description,
 runs an ATS (Applicant Tracking System) parse-compatibility check, and returns
